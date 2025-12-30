@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
 import SEO from "../components/SEO";
+import { track } from "../lib/analytics";
 import { getProject } from "../data/projects";
 import type { Project } from "../data/projects";
 import { Button, Card, Container, Divider, PageShell, Section, Tag } from "../components/ui";
@@ -60,6 +61,10 @@ export default function ProjectDetail() {
   }
 
   const p: Project = project;
+
+  useEffect(() => {
+    track("view_project", { slug: p.slug, title: p.title });
+  }, [p.slug, p.title]);
 
   return (
     <PageShell>

@@ -22,7 +22,7 @@ export default function Home() {
         title="Portfolio"
         canonicalPath="/"
         description="Decision systems that ship: forecasting, ML decisioning, RAG knowledge products, and stakeholder-ready evaluation."
-       ogImagePath="/og/default.svg"/>
+      />
 
       <div className="py-10 sm:py-14">
         <div className="relative">

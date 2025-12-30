@@ -5,7 +5,7 @@ import { Button, Card, Container, PageShell, Section } from "../components/ui";
 export default function NotFound() {
   return (
     <PageShell>
-      <SEO title="404 — Page not found" canonicalPath="/404"  ogImagePath="/og/default.svg"/>
+      <SEO title="404 — Page not found" canonicalPath="/404" />
       <Container>
         <Section title="Page not found" eyebrow="404">
           <Card className="p-6 sm:p-8">

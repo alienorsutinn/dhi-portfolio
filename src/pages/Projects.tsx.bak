@@ -28,7 +28,7 @@ export default function Projects() {
 
   return (
     <PageShell>
-      <SEO title="Projects" canonicalPath="/projects" description="Case studies: forecasting, ML decisioning, RAG, optimisation, and production-minded evaluation."  ogImagePath="/og/default.svg"/>
+      <SEO title="Projects" canonicalPath="/projects" description="Case studies: forecasting, ML decisioning, RAG, optimisation, and production-minded evaluation." />
       <Container>
         <Section
           title="Projects"

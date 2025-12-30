@@ -4,7 +4,7 @@ import { Button, Card, Container, PageShell, Section, Tag } from "../components/
 export default function About() {
   return (
     <PageShell>
-      <SEO title="About" canonicalPath="/about" description="How I build: evaluation-first, production-minded, and stakeholder-ready decision systems."  ogImagePath="/og/default.svg"/>
+      <SEO title="About" canonicalPath="/about" description="How I build: evaluation-first, production-minded, and stakeholder-ready decision systems." />
       <Container>
         <Section title="About" eyebrow="How I build">
           <Card className="p-6 sm:p-8">

@@ -72,7 +72,8 @@ export default function ProjectDetail() {
         title={p.title}
         canonicalPath={`/projects/${p.slug}`}
         description={p.oneLiner}
-      />
+        ogImagePath={`/og/${p.slug}.svg`}
+/>
       <Container>
         <Section
           eyebrow={p.org ? `${p.org}${p.timeframe ? ` • ${p.timeframe}` : ""}` : p.timeframe}
