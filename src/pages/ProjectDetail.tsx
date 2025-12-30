@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getProject } from "../data/projects";
 import { Card, Container, Section, Tag } from "../components/ui";
