@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+:root {
+    --max-w: 1100px;
+  }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .prose p { line-height: 1.75; }
+  .prose li { line-height: 1.7; }
+  
+  ::selection { background: rgba(99,102,241,.25); }

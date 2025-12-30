@@ -1,163 +1,163 @@
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
+import { ExternalLink } from "lucide-react";
 import { getProject } from "../data/projects";
-import { Card, Container, Section, Tag } from "../components/ui";
+import type { Project } from "../data/projects";
+import { Button, Card, Container, Divider, PageShell, Section, Tag } from "../components/ui";
+
+function Bullets({ items }: { items?: string[] }) {
+  if (!items || items.length === 0) return null;
+  return (
+    <ul className="list-disc space-y-2 pl-5 text-slate-700">
+      {items.map((x) => (
+        <li key={x}>{x}</li>
+      ))}
+    </ul>
+  );
+}
+
+function DetailBlock({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="mt-8">
+      <h3 className="text-sm font-semibold tracking-wide text-slate-900">{title}</h3>
+      <div className="mt-3">{children}</div>
+    </div>
+  );
+}
 
 export default function ProjectDetail() {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const project = useMemo(() => (slug ? getProject(slug) : undefined), [slug]);
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <PageShell>
         <Container>
-          <div className="py-12">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6">
-              <div className="text-slate-700 font-semibold">Project not found</div>
-              <div className="text-slate-500 text-sm mt-2">
-                The URL might be wrong, or your data set doesn’t include this project.
+          <Section title="Project not found">
+            <Card className="p-6">
+              <div className="text-slate-700">The URL might be wrong, or the project data isn’t loaded.</div>
+              <div className="mt-5">
+                <Button href="/projects" variant="secondary">
+                  Back to projects
+                </Button>
               </div>
-              <Link to="/projects" className="mt-4 inline-flex text-sm font-semibold text-slate-900 underline">
-                Back to projects
-              </Link>
-            </div>
-          </div>
+            </Card>
+          </Section>
         </Container>
-      </div>
+      </PageShell>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <Container>
-        <div className="py-10">
-          <Link to="/projects" className="text-sm font-semibold text-slate-700 hover:underline">
-            ← Back to projects
-          </Link>
+  const p: Project = project;
 
-          <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-            <div className="text-xs font-semibold text-slate-500">
-              {project.org ? `${project.org} • ` : ""}
-              {project.timeframe ?? ""}
-            </div>
-            <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-              {project.title}
-            </h1>
-            <div className="mt-3 text-sm text-slate-600 sm:text-base">{project.subtitle}</div>
-            <div className="mt-3 text-sm text-slate-800 sm:text-base">{project.oneLiner}</div>
+  return (
+    <PageShell>
+      <Container>
+        <Section
+          eyebrow={p.org ? `${p.org}${p.timeframe ? ` • ${p.timeframe}` : ""}` : p.timeframe}
+          title={p.title}
+          right={
+            <Button href="/projects" variant="secondary">
+              Back
+            </Button>
+          }
+        >
+          <Card className="p-6 sm:p-8">
+            <div className="text-sm text-slate-600">{p.subtitle}</div>
+            <div className="mt-3 text-base leading-relaxed text-slate-800">{p.oneLiner}</div>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              {project.tags.map((t) => (
+              {p.tags.map((t) => (
                 <Tag key={t}>{t}</Tag>
               ))}
             </div>
 
-            {project.confidentialityNote ? (
-              <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-                <span className="font-semibold">Confidentiality:</span> {project.confidentialityNote}
+            {p.confidentialityNote ? (
+              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                {p.confidentialityNote}
               </div>
             ) : null}
-          </div>
 
-          <Section eyebrow="Highlights" title="Impact">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Card>
-                <div className="text-sm font-semibold text-slate-900">Impact</div>
-                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
-                  {project.impact.map((x: string) => (
-                    <li key={x}>{x}</li>
-                  ))}
-                </ul>
-              </Card>
-              <Card>
-                <div className="text-sm font-semibold text-slate-900">Methods + stack</div>
-                <div className="mt-3">
-                  <div className="text-xs font-semibold text-slate-500">Methods</div>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {project.methods.map((x: string) => (
-                      <Tag key={x}>{x}</Tag>
-                    ))}
-                  </div>
+            <Divider />
 
-                  <div className="mt-4 text-xs font-semibold text-slate-500">Stack</div>
+            <DetailBlock title="Problem">
+              <Bullets items={p.problem} />
+            </DetailBlock>
+
+            <DetailBlock title="Approach">
+              <Bullets items={p.approach} />
+            </DetailBlock>
+
+            <DetailBlock title="Results / Impact">
+              <Bullets items={p.impact} />
+            </DetailBlock>
+
+            <DetailBlock title="Architecture / Stack">
+              <div className="flex flex-wrap gap-2">
+                {(p.stack ?? []).map((x) => (
+                  <Tag key={x}>{x}</Tag>
+                ))}
+              </div>
+              {(p.methods?.length ?? 0) > 0 ? (
+                <div className="mt-4">
+                  <div className="text-sm font-semibold text-slate-900">Methods</div>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {project.stack.map((x: string) => (
+                    {p.methods!.map((x) => (
                       <Tag key={x}>{x}</Tag>
                     ))}
                   </div>
                 </div>
-              </Card>
+              ) : null}
+            </DetailBlock>
+
+            {(p.evaluation?.length ?? 0) > 0 ? (
+              <DetailBlock title="Evaluation">
+                <Bullets items={p.evaluation} />
+              </DetailBlock>
+            ) : null}
+
+            {(p.monitoring?.length ?? 0) > 0 ? (
+              <DetailBlock title="Monitoring">
+                <Bullets items={p.monitoring} />
+              </DetailBlock>
+            ) : null}
+
+            {(p.nextSteps?.length ?? 0) > 0 ? (
+              <DetailBlock title="What I’d do next">
+                <Bullets items={p.nextSteps} />
+              </DetailBlock>
+            ) : null}
+
+            {(p.ndaSafeArtefacts?.length ?? 0) > 0 ? (
+              <DetailBlock title="NDA-safe artefacts">
+                <Bullets items={p.ndaSafeArtefacts} />
+              </DetailBlock>
+            ) : null}
+
+            {(p.links?.length ?? 0) > 0 ? (
+              <DetailBlock title="Links">
+                <div className="flex flex-wrap gap-3">
+                  {p.links!.map((l) => (
+                    <Button key={l.href} href={l.href} variant="secondary">
+                      {l.label} <ExternalLink size={16} />
+                    </Button>
+                  ))}
+                </div>
+              </DetailBlock>
+            ) : null}
+
+            <div className="mt-10 flex flex-wrap gap-3">
+              <Button href="/contact">Contact</Button>
+              <Button href="/projects" variant="secondary">
+                Back to projects
+              </Button>
+              <Link className="self-center text-sm font-semibold text-slate-700 hover:text-slate-900" to="/">
+                Home →
+              </Link>
             </div>
-          </Section>
-
-          {(project.problem?.length ?? 0) > 0 ? (
-            <Section eyebrow="Context" title="Problem">
-              <Card>
-                <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
-                  {project.problem!.map((x: string) => (
-                    <li key={x}>{x}</li>
-                  ))}
-                </ul>
-              </Card>
-            </Section>
-          ) : null}
-
-          {(project.approach?.length ?? 0) > 0 ? (
-            <Section eyebrow="What I did" title="Approach">
-              <Card>
-                <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
-                  {project.approach!.map((x: string) => (
-                    <li key={x}>{x}</li>
-                  ))}
-                </ul>
-              </Card>
-            </Section>
-          ) : null}
-
-          <Section eyebrow="Trust" title="Evaluation + monitoring">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Card>
-                <div className="text-sm font-semibold text-slate-900">Evaluation</div>
-                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
-                  {project.evaluation.map((x: string) => (
-                    <li key={x}>{x}</li>
-                  ))}
-                </ul>
-              </Card>
-              <Card>
-                <div className="text-sm font-semibold text-slate-900">Monitoring</div>
-                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
-                  {project.monitoring.map((x: string) => (
-                    <li key={x}>{x}</li>
-                  ))}
-                </ul>
-              </Card>
-            </div>
-          </Section>
-
-          <Section eyebrow="NDA-safe" title="Artefacts">
-            <Card>
-              <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
-                {project.ndaSafeArtefacts.map((x: string) => (
-                  <li key={x}>{x}</li>
-                ))}
-              </ul>
-            </Card>
-          </Section>
-
-          {(project.nextSteps?.length ?? 0) > 0 ? (
-            <Section eyebrow="Forward" title="Next steps">
-              <Card>
-                <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
-                  {project.nextSteps!.map((x: string) => (
-                    <li key={x}>{x}</li>
-                  ))}
-                </ul>
-              </Card>
-            </Section>
-          ) : null}
-        </div>
+          </Card>
+        </Section>
       </Container>
-    </div>
+    </PageShell>
   );
 }

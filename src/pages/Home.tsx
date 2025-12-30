@@ -1,110 +1,111 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { PROJECTS, type Project } from "../data/projects";
-import { Card, Container, Kpi, PrimaryButton, SecondaryButton, Section, Tag } from "../components/ui";
+import { ArrowRight, Briefcase, Cpu, LineChart } from "lucide-react";
+import { PROJECTS } from "../data/projects";
+import { Button, Card, Container, PageShell, Section, Tag } from "../components/ui";
 
 export default function Home() {
-  const featured = useMemo<Project[]>(() => PROJECTS.slice(0, 3), []);
+  const featured = useMemo(() => PROJECTS.filter((p) => p.featured).slice(0, 3), []);
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="border-b border-slate-200 bg-white">
-        <Container>
-          <div className="py-12 sm:py-16">
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">
-              Data Science • Analytics • GenAI
-            </div>
-
-            <h1 className="mt-4 max-w-4xl text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-              Dhi — Data Scientist who ships decision tools, not just models.
-            </h1>
-
-            <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-              I build capacity-aware ML systems, robust evaluation workflows, and practical GenAI products —
-              designed to work with real constraints (stakeholders, monitoring, and business impact).
-            </p>
-
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <PrimaryButton to="/projects">View projects</PrimaryButton>
-              <SecondaryButton to="/resume">Resume</SecondaryButton>
-              <SecondaryButton to="/contact">Contact</SecondaryButton>
-            </div>
-
-            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <Kpi label="Focus" value="Impact + adoption" />
-              <Kpi label="Strength" value="Problem framing" />
-              <Kpi label="Style" value="Clean systems" />
-            </div>
-          </div>
-        </Container>
-      </div>
-
+    <PageShell>
       <Container>
-        <Section
-          eyebrow="Case studies"
-          title="Selected work"
-          subtitle="A few projects with clear problem → approach → evaluation → monitoring. NDA-safe summaries."
-        >
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((p: Project) => (
-              <Link key={p.slug} to={`/projects/${p.slug}`} className="group">
-                <Card>
-                  <div className="text-xs font-semibold text-slate-500">
-                    {p.org ? `${p.org} • ` : ""}
-                    {p.timeframe ?? ""}
+        <Section>
+          <Card className="p-8 sm:p-10">
+            <div className="flex flex-col gap-6">
+              <div>
+                <div className="text-xs font-semibold tracking-wide text-slate-500">Portfolio</div>
+                <h1 className="mt-3 text-4xl font-semibold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+                  Data Science • GenAI • Product Analytics
+                </h1>
+                <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-700">
+                  I build decision systems: forecasting, risk scoring, RAG knowledge products, and dashboards that ship.
+                </p>
+
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Button href="/projects">
+                    View projects <ArrowRight size={16} />
+                  </Button>
+                  <Button variant="secondary" href="/contact">
+                    Contact
+                  </Button>
+                </div>
+
+                <div className="mt-6 flex flex-wrap gap-2 text-sm text-slate-600">
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1">JLR Data Science</span>
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1">Forecasting • ML</span>
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1">RAG • Cloud Run • Postgres</span>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <Card className="p-5">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                    <Cpu size={16} /> Systems
                   </div>
-
-                  <div className="mt-2 text-base font-semibold text-slate-900 group-hover:underline">
-                    {p.title}
-                  </div>
-
-                  <div className="mt-2 text-sm text-slate-600">{p.subtitle}</div>
-                  <div className="mt-3 text-sm text-slate-700">{p.oneLiner}</div>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {p.tags.slice(0, 4).map((t) => (
-                      <Tag key={t}>{t}</Tag>
-                    ))}
-                  </div>
-
-                  <div className="mt-5 text-sm font-semibold text-slate-900">Open case study →</div>
+                  <div className="mt-2 text-sm text-slate-700">Production-minded pipelines, telemetry, guardrails.</div>
                 </Card>
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-6">
-            <PrimaryButton to="/projects">Browse all projects</PrimaryButton>
-          </div>
+                <Card className="p-5">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                    <LineChart size={16} /> Decisions
+                  </div>
+                  <div className="mt-2 text-sm text-slate-700">Explainable models + diagnostics stakeholders trust.</div>
+                </Card>
+                <Card className="p-5">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                    <Briefcase size={16} /> Delivery
+                  </div>
+                  <div className="mt-2 text-sm text-slate-700">Clear narrative, tight scope, measurable outcomes.</div>
+                </Card>
+              </div>
+            </div>
+          </Card>
         </Section>
 
         <Section
-          eyebrow="How I work"
-          title="A simple recipe that makes projects land"
-          subtitle="This is what typically turns analysis into something stakeholders actually use."
+          title="Featured work"
+          right={
+            <Link className="text-sm font-semibold text-slate-700 hover:text-slate-900" to="/projects">
+              See all →
+            </Link>
+          }
         >
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <Card>
-              <div className="text-sm font-semibold text-slate-900">1) Frame the constraint</div>
-              <p className="mt-2 text-sm text-slate-600">
-                Define what “success” means in the real world (capacity, latency, coverage, governance).
-              </p>
-            </Card>
-            <Card>
-              <div className="text-sm font-semibold text-slate-900">2) Build the minimal engine</div>
-              <p className="mt-2 text-sm text-slate-600">
-                Focus on the smallest pipeline that produces reliable decisions — then iterate.
-              </p>
-            </Card>
-            <Card>
-              <div className="text-sm font-semibold text-slate-900">3) Prove + monitor it</div>
-              <p className="mt-2 text-sm text-slate-600">
-                Time-sliced evaluation, segment checks, and monitoring guardrails so it stays trustworthy.
-              </p>
-            </Card>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {featured.map((p) => (
+              <Card key={p.slug} className="p-5">
+                <div className="text-sm font-semibold text-slate-900">{p.title}</div>
+                <div className="mt-2 text-sm text-slate-700">{p.oneLiner}</div>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {p.tags.slice(0, 3).map((t) => (
+                    <Tag key={t}>{t}</Tag>
+                  ))}
+                </div>
+
+                <div className="mt-5">
+                  <Button href={`/projects/${p.slug}`} variant="secondary" className="w-full">
+                    View case study
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </Section>
+
+        <Section title="Quick links">
+          <div className="flex flex-wrap gap-3">
+            <Button href="/resume" variant="secondary">
+              Resume
+            </Button>
+            <Button href="/about" variant="secondary">
+              About
+            </Button>
+            <Button href="/contact" variant="secondary">
+              Contact
+            </Button>
           </div>
         </Section>
       </Container>
-    </div>
+    </PageShell>
   );
 }
