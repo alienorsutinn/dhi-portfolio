@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 
 export function PageShell({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 relative overflow-hidden glow-bg">
+      <div className="noise" />
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(60%_60%_at_50%_0%,rgba(99,102,241,0.10),rgba(248,250,252,0))]" />
       {children}
     </div>

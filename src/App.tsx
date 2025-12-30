@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import Nav from "./components/Nav";
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
@@ -8,31 +9,28 @@ import Resume from "./pages/Resume";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <div className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link className="font-semibold text-slate-900" to="/">DJ</Link>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link className="text-slate-700 hover:underline" to="/projects">Projects</Link>
-            <Link className="text-slate-700 hover:underline" to="/resume">Resume</Link>
-            <Link className="text-slate-700 hover:underline" to="/about">About</Link>
-            <Link className="text-slate-700 hover:underline" to="/contact">Contact</Link>
-            <a className="rounded-xl bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800"
-               href="mailto:dhijoshiwork@gmail.com">
-              Hire me
-            </a>
-          </nav>
-        </div>
+    <div className="min-h-screen">
+      <Nav />
+      <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-6">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:slug" element={<ProjectDetail />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/resume" element={<Resume />} />
+        </Routes>
       </div>
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/:slug" element={<ProjectDetail />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/resume" element={<Resume />} />
-      </Routes>
-    </BrowserRouter>
+      <footer className="mt-16 border-t border-slate-200 bg-slate-50/60">
+        <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-6 py-10 text-sm text-slate-600 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+          <div>© {new Date().getFullYear()} Dhi Joshi</div>
+          <div className="flex gap-4">
+            <a className="font-semibold text-slate-700 hover:text-slate-900" href="/projects">Projects</a>
+            <a className="font-semibold text-slate-700 hover:text-slate-900" href="/contact">Contact</a>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }
