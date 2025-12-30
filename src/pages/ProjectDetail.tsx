@@ -1,178 +1,163 @@
-import { useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useMemo } from "react";
+import { Link, useParams } from "react-router-dom";
 import { getProject } from "../data/projects";
-import VisualBlock from "../components/VisualBlock";
-import PipelineDiagram from "../components/PipelineDiagram";
-
-function PlaceholderCard({ title, hint }: { title: string; hint: string }) {
-  return (
-    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6">
-      <div className="text-sm font-semibold text-slate-900">{title}</div>
-      <div className="mt-2 text-sm text-slate-600">{hint}</div>
-      <div className="mt-4 rounded-xl bg-slate-50 p-4 text-xs text-slate-600">
-        Drop an image later (mock dashboard / diagram / synthetic chart).
-      </div>
-    </div>
-  );
-}
+import { Card, Container, Section, Tag } from "../components/ui";
 
 export default function ProjectDetail() {
   const { slug } = useParams();
-
-  const project = useMemo(() => {
-    if (!slug) return undefined;
-    return slug ? getProject(slug) : undefined;
-}, [slug]);
+  const project = useMemo(() => (slug ? getProject(slug) : undefined), [slug]);
 
   if (!project) {
     return (
       <div className="min-h-screen bg-slate-50">
-        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
-            <div className="text-slate-700 font-semibold">Project not found</div>
-            <div className="mt-2 text-sm text-slate-600">The URL might be wrong.</div>
-            <Link className="mt-4 inline-block text-sm text-slate-700 underline" to="/projects">
-              ← Back to projects
-            </Link>
+        <Container>
+          <div className="py-12">
+            <div className="rounded-2xl border border-slate-200 bg-white p-6">
+              <div className="text-slate-700 font-semibold">Project not found</div>
+              <div className="text-slate-500 text-sm mt-2">
+                The URL might be wrong, or your data set doesn’t include this project.
+              </div>
+              <Link to="/projects" className="mt-4 inline-flex text-sm font-semibold text-slate-900 underline">
+                Back to projects
+              </Link>
+            </div>
           </div>
-        </div>
+        </Container>
       </div>
     );
   }
 
-  const isOptimization = project.methods.some((m: string) => /MILP|Optimization|Solver/i.test(m));
-
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-        <Link className="text-sm text-slate-700 underline" to="/projects">
-          ← All projects
-        </Link>
+      <Container>
+        <div className="py-10">
+          <Link to="/projects" className="text-sm font-semibold text-slate-700 hover:underline">
+            ← Back to projects
+          </Link>
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{project.title}</h1>
-          <p className="mt-2 text-slate-600">
-            {(project.org ?? "—")}{project.timeframe ? ` · ${project.timeframe}` : ""}
-          </p>
+          <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+            <div className="text-xs font-semibold text-slate-500">
+              {project.org ? `${project.org} • ` : ""}
+              {project.timeframe ?? ""}
+            </div>
+            <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+              {project.title}
+            </h1>
+            <div className="mt-3 text-sm text-slate-600 sm:text-base">{project.subtitle}</div>
+            <div className="mt-3 text-sm text-slate-800 sm:text-base">{project.oneLiner}</div>
 
-          <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5">
-            <div className="text-sm font-semibold text-slate-900">TL;DR</div>
-            <div className="mt-2 text-sm text-slate-700">{project.oneLiner}</div>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {project.tags.map((t) => (
+                <Tag key={t}>{t}</Tag>
+              ))}
+            </div>
+
+            {project.confidentialityNote ? (
+              <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                <span className="font-semibold">Confidentiality:</span> {project.confidentialityNote}
+              </div>
+            ) : null}
           </div>
 
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            <div>
-              <div className="text-sm font-semibold text-slate-900">Impact</div>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
-                {project.impact.map((x: string) => <li key={x}>{x}</li>)}
-              </ul>
-            </div>
+          <Section eyebrow="Highlights" title="Impact">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Card>
+                <div className="text-sm font-semibold text-slate-900">Impact</div>
+                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
+                  {project.impact.map((x: string) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </Card>
+              <Card>
+                <div className="text-sm font-semibold text-slate-900">Methods + stack</div>
+                <div className="mt-3">
+                  <div className="text-xs font-semibold text-slate-500">Methods</div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {project.methods.map((x: string) => (
+                      <Tag key={x}>{x}</Tag>
+                    ))}
+                  </div>
 
-            <div>
-              <div className="text-sm font-semibold text-slate-900">Methods</div>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
-                {project.methods.map((x: string) => <li key={x}>{x}</li>)}
-              </ul>
+                  <div className="mt-4 text-xs font-semibold text-slate-500">Stack</div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {project.stack.map((x: string) => (
+                      <Tag key={x}>{x}</Tag>
+                    ))}
+                  </div>
+                </div>
+              </Card>
             </div>
+          </Section>
 
-            <div>
-              <div className="text-sm font-semibold text-slate-900">Stack</div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {project.stack.map((x: string) => (
-                  <span key={x} className="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs text-slate-700">
-                    {x}
-                  </span>
+          {(project.problem?.length ?? 0) > 0 ? (
+            <Section eyebrow="Context" title="Problem">
+              <Card>
+                <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
+                  {project.problem!.map((x: string) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </Card>
+            </Section>
+          ) : null}
+
+          {(project.approach?.length ?? 0) > 0 ? (
+            <Section eyebrow="What I did" title="Approach">
+              <Card>
+                <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
+                  {project.approach!.map((x: string) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </Card>
+            </Section>
+          ) : null}
+
+          <Section eyebrow="Trust" title="Evaluation + monitoring">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Card>
+                <div className="text-sm font-semibold text-slate-900">Evaluation</div>
+                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
+                  {project.evaluation.map((x: string) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </Card>
+              <Card>
+                <div className="text-sm font-semibold text-slate-900">Monitoring</div>
+                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
+                  {project.monitoring.map((x: string) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </Card>
+            </div>
+          </Section>
+
+          <Section eyebrow="NDA-safe" title="Artefacts">
+            <Card>
+              <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
+                {project.ndaSafeArtefacts.map((x: string) => (
+                  <li key={x}>{x}</li>
                 ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="text-sm font-semibold text-slate-900">NDA note</div>
-              <div className="mt-2 text-sm text-slate-700">
-                NDA-safe: visuals are mock-ups / synthetic examples. No internal dashboards, raw data, or proprietary identifiers.
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            <PipelineDiagram
-              nodes={[
-                { label: "Data" },
-                { label: "Features" },
-                { label: isOptimization ? "Solver" : "Model" },
-                { label: "Evaluation" },
-                { label: "Output" },
-                { label: "Monitoring" },
-              ]}
-            />
-
-            <VisualBlock
-              title="Evaluation mock"
-              subtitle="What you would show (synthetic) to prove the work"
-              bullets={[
-                "Backtest chart (actual vs predicted / baseline)",
-                "Segment breakdown (where errors concentrate)",
-                isOptimization
-                  ? "KPI trade-offs + constraint satisfaction summary"
-                  : "Operating point / threshold rationale (if decisioning)",
-              ]}
-            />
-
-            <VisualBlock
-              title="Monitoring mock"
-              subtitle="What you would monitor in production"
-              bullets={[
-                "Score/target drift (distribution shifts / PSI)",
-                "Coverage checks + missingness alerts",
-                "Weekly KPI trend + guardrails",
-              ]}
-            />
-
-            <VisualBlock
-              title="NDA-safe artefacts"
-              subtitle="Concrete, recruiter-friendly deliverables"
-              bullets={project.ndaSafeArtefacts.length ? project.ndaSafeArtefacts : [
-                "One-page architecture diagram",
-                "One-page evaluation pack",
-                "One-page monitoring checklist",
-              ]}
-            />
-          </div>
-
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            <div>
-              <div className="text-sm font-semibold text-slate-900">Evaluation</div>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
-                {project.evaluation.map((x: string) => <li key={x}>{x}</li>)}
               </ul>
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-slate-900">Monitoring</div>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
-                {project.monitoring.map((x: string) => <li key={x}>{x}</li>)}
-              </ul>
-            </div>
-          </div>
+            </Card>
+          </Section>
 
-          {/* caseStudy currently not in your Project type; keep this as placeholder hook */}
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            <PlaceholderCard
-              title="Add a case study block"
-              hint="If you want long-form: add caseStudy fields to Project type + render with CaseStudySections."
-            />
-            <PlaceholderCard
-              title="Add 1 mock visual"
-              hint="Paste a synthetic chart screenshot, or add a /public images folder and reference it."
-            />
-          </div>
-
-          {project.confidentialityNote && (
-            <div className="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-              <span className="font-semibold">Confidentiality:</span> {project.confidentialityNote}
-            </div>
-          )}
+          {(project.nextSteps?.length ?? 0) > 0 ? (
+            <Section eyebrow="Forward" title="Next steps">
+              <Card>
+                <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
+                  {project.nextSteps!.map((x: string) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </Card>
+            </Section>
+          ) : null}
         </div>
-      </div>
+      </Container>
     </div>
   );
 }
