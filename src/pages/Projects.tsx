@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, SlidersHorizontal } from "lucide-react";
+import SEO from "../components/SEO";
 import { PROJECTS } from "../data/projects";
 import { Button, Card, Container, PageShell, Section, Tag } from "../components/ui";
 
@@ -27,6 +28,7 @@ export default function Projects() {
 
   return (
     <PageShell>
+      <SEO title="Projects" canonicalPath="/projects" description="Case studies: forecasting, ML decisioning, RAG, optimisation, and production-minded evaluation." />
       <Container>
         <Section
           title="Projects"
@@ -56,7 +58,7 @@ export default function Projects() {
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
-              {allTags.slice(0, 14).map((t) => {
+              {allTags.map((t) => {
                 const active = t === activeTag;
                 return (
                   <button
@@ -76,6 +78,23 @@ export default function Projects() {
               })}
             </div>
           </Card>
+
+          {ordered.length === 0 ? (
+            <Card className="mt-6 p-8">
+              <div className="text-sm font-semibold text-slate-900">No matches</div>
+              <div className="mt-2 text-sm text-slate-700">
+                Try clearing the tag filter, or search for something broader (e.g. “ML”, “forecast”, “RAG”).
+              </div>
+              <div className="mt-5 flex gap-3">
+                <Button onClick={() => { setQuery(""); setActiveTag("All"); }} variant="secondary">
+                  Reset filters
+                </Button>
+                <Link className="self-center text-sm font-semibold text-slate-700 hover:text-slate-900" to="/contact">
+                  Contact →
+                </Link>
+              </div>
+            </Card>
+          ) : null}
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {ordered.map((p) => (

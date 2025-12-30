@@ -1,11 +1,4 @@
 export type Project = {
-  metrics?: {
-    model?: string;
-    metric?: string;
-    scale?: string;
-    latencyOrCost?: string;
-    monitoring?: string;
-  };
   slug: string;
   title: string;
   org?: string;
